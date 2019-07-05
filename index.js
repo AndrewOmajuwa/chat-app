@@ -60,9 +60,10 @@ app.get('/stream', onStream)
 app.post('/message', onMessage)
 
 //start the server
+const port = process.env.PORT || 4000
 
 function onListen() {
-    const port = process.env.PORT || 4000
+   
     console.log(`listening on port ${port}`)
 }
 
