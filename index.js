@@ -3,8 +3,6 @@ const Sse = require ('json-sse')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 
-
-
 //iniitialize the server
 const app = express()
 
@@ -34,25 +32,23 @@ function onStream(req, res) {
 }
 
 function onMessage(req, res){
+    //destructure the user's message
+    const {message}  = req.body
 
-//destructure the user's message
-const {message}  = req.body
+    //add it to the store
+    messages.push(message)
 
-//add it to the store
-messages.push(message)
+    //reserialize the store
+    const json= JSON.stringify(messages)
 
-//reserialize the store
-const json= JSON.stringify(messages)
+    //update the initial data
+    stream.updateInit(json)
 
-//update the initial data
-stream.updateInit(json)
+    //notify all the clients
+    stream.send(json)
 
-//notify all the clients
-stream.send(json)
-
-//send a reponse
-return res.status(201).send(message)
-
+    //send a reponse
+    return res.status(201).send(message)
 }
 
 app.get('/stream', onStream)
